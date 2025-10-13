@@ -44,4 +44,5 @@ jobs:
           name: doom64ex-plus-linux64
           path: |
             DOOM64
+            doom64ex-plus.wad
             DOOMLIC
