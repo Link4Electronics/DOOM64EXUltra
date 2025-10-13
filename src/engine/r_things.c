@@ -27,6 +27,7 @@ extern int game_world_shader_scope;
 extern void I_SectorCombiner_Unbind(void);
 
 int g_psprite_scope = 0;
+
 #include "r_things.h"
 #include "r_lights.h"
 #include "r_main.h"
@@ -44,6 +45,7 @@ int g_psprite_scope = 0;
 #include "con_console.h"
 #include "dgl.h"
 #include "i_shaders.h"
+#include "i_sectorcombiner.h"
 
 #define MAX_SPRITES    999999
 
@@ -383,13 +385,6 @@ static boolean R_GenerateSpritePlane(visspritelist_t* vissprite, vtx_t* vertex) 
 	else {
 		R_LightToVertex(vertex,
 			thing->subsector->sector->colors[LIGHT_THING], 4);
-
-		float brightness_multiplier = 1.6f;
-		for (int i = 0; i < 4; i++) {
-			vertex[i].r = (byte)fmin(255.0f, (float)vertex[i].r * brightness_multiplier);
-			vertex[i].g = (byte)fmin(255.0f, (float)vertex[i].g * brightness_multiplier);
-			vertex[i].b = (byte)fmin(255.0f, (float)vertex[i].b * brightness_multiplier);
-		}
 	}
 
 	vertex[0].a = vertex[1].a = vertex[2].a = vertex[3].a = draw_alpha;
@@ -560,6 +555,9 @@ void R_SetupSprites(void) {
 	boolean interpolate = (int)i_interpolateframes.value;
 	visspritelist_t* vis;
 
+	I_ShaderBind();
+	I_SectorCombiner_Commit();
+
 	for (vis = vissprite - 1; vis >= visspritelist; vis--) {
 		// Avoid from having the torch poles and fire from z-fighting
 		if (vis->spr->type >= MT_PROP_POLEBASELONG &&
@@ -592,6 +590,9 @@ void R_SetupSprites(void) {
 				(renderplayer->cameratarget == renderplayer->mo))) {
 			continue;
 		}
+
+		I_ShaderBind();
+		I_SectorCombiner_Commit();
 
 		R_AddVisSprite(vis);
 	}
