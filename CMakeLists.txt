@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.12)
 
 project(DOOM64 LANGUAGES C VERSION 5.0.0.0)
 
