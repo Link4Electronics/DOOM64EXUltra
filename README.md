@@ -1,5 +1,7 @@
 # Doom 64 EX+
 
+# Note: 05.11.2025 - Doom64 EX+ is now considered 'done and complete' from my side.  I started this 4 years ago and I am extremely happy with the state it currently is in.  I thank all of the contributors, maintainers and fellow developers who help to package, distribute, code, release and to reach as many people as possible.  The last few months have been a whirlwind of ferocious activity in getting EX+ to be 'at parity' with the remaster and completely compatible with it, and I'm proud of where it now stands.  It has been slightly heartbreaking with all the negativity recently, in regards not only to the licence but from people who seem to believe that, developing something for free means to demand 'whatever you want'.  That, coupled with people being unappreciative and downright rude with my efforts, has primarily made this decision.  I will instead spend more of my hobby time, with my family, who don't treat me with rudeness.  Feel free to fork and continue EX+ on your own.  ~ Gibbon
+
 Doom 64 EX+ is a community-driven continuation of Samuel "Kaiser" Villarreal's original Doom 64 EX project. The primary goal of Doom 64 EX+ is to faithfully recreate the classic Nintendo 64 experience while incorporating modern features, extensive modding capabilities, and performance enhancements.
 
 ## Key Features and Differences from Legacy Doom 64 EX
