@@ -1,4 +1,7 @@
-include_directories(cimgui/imgui)
+include_directories(
+	${SDL3_INCLUDE_DIRS}
+	cimgui/imgui
+)
 
 add_library(
 	cimgui
@@ -9,7 +12,7 @@ add_library(
 	"cimgui/imgui/imgui_demo.cpp"
 	"cimgui/imgui/imgui_widgets.cpp"
 	"cimgui/imgui/imgui_tables.cpp"
-	"cimgui/imgui/backends/imgui_impl_sdl3.cpp"
+"cimgui/imgui/backends/imgui_impl_sdl3.cpp"
 	"cimgui/imgui/backends/imgui_impl_opengl3.cpp"
 )
 target_link_libraries(cimgui SDL3)
