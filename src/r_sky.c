@@ -916,7 +916,7 @@ void R_DrawSky(void) {
 //
 
 void R_SkyTicker(void) {
-    if (menuactive) {
+    if (menuActive) {
         return;
     }
 

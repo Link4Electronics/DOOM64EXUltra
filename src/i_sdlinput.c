@@ -27,6 +27,7 @@
 #include "doomstat.h"
 #include "i_system.h"
 #include "i_video.h"
+#include "i_imgui.h"
 #include "d_main.h"
 #include "con_cvar.h"
 #include "dgl.h"
@@ -38,7 +39,6 @@ CVAR(v_macceleration, 0);
 CVAR(v_mlookinvert, 0);
 CVAR(v_yaxismove, 0);
 CVAR(v_xaxismove, 0);
-CVAR_EXTERNAL(m_menumouse);
 CVAR_EXTERNAL(p_autoaim);
 
 CVAR_CMD(v_mlook, 0) {
@@ -106,7 +106,7 @@ gamepad64_t gamepad64;
 #define GAMEPAD_ADS_SLOWDOWN     0.55f
 
 extern void D_PostEvent(event_t*);
-extern boolean menuactive;
+extern boolean menuActive;
 extern gamestate_t gamestate;
 
 static SDL_INLINE float I_GamepadClamp(float x) { return SDL_clamp(x, 0.f, 1.f); }
@@ -286,7 +286,7 @@ static void I_GamepadUpdate(void) {
 	I_GamepadRadialLookSmoothing(lx_raw, ly_raw, GAMEPAD_INNER_DZ_LEFT, GAMEPAD_OUTER_DZ, GAMEPAD_EXPO_LEFT, GAMEPAD_ANTI_DZ, &lx, &ly);
 	I_GamepadRadialLookSmoothing(rx_raw, ry_raw, GAMEPAD_INNER_DZ_RIGHT, GAMEPAD_OUTER_DZ, GAMEPAD_EXPO_RIGHT, GAMEPAD_ANTI_DZ, &rx, &ry);
 
-	const bool in_menu = (menuactive || gamestate != GS_LEVEL);
+	const bool in_menu = (menuActive || gamestate != GS_LEVEL);
 
 	if (in_menu) {
 		I_GamepadKeyRelease();
@@ -577,7 +577,7 @@ boolean I_UpdateGrab(void) {
 	static boolean currently_grabbed = false;
 	boolean grab;
 
-	grab = !menuactive
+	grab = !menuActive
 		&& (gamestate == GS_LEVEL)
 		&& !demoplayback;
 
@@ -613,6 +613,7 @@ void I_GetEvent(SDL_Event* Event) {
 	unsigned int mwheeluptic = 0, mwheeldowntic = 0;
 	unsigned int tic = gametic;
 
+	imgui_event(Event);
 	I_GamepadHandleSDLEvent(Event);
 
 	switch (Event->type) {
@@ -743,17 +744,6 @@ void I_StartTic(void) {
 	I_InitInputs();
 	I_ReadMouse();
 	I_GamepadUpdate();
-}
-
-static float GetDisplayRefreshRate(void) {
-	SDL_DisplayID displayid = SDL_GetDisplayForWindow(window);
-	if (displayid) {
-		const SDL_DisplayMode* mode = SDL_GetCurrentDisplayMode(displayid);
-		if (mode && mode->refresh_rate > 0) {
-			return mode->refresh_rate;
-		}
-	}
-	return 60.0f; // not happy, return to 60
 }
 
 //

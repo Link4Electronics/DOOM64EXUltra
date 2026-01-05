@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 //
 // DESCRIPTION:
-//    SDL Stuff
+//	SDL Stuff
 //
 //-----------------------------------------------------------------------------
 
@@ -28,6 +28,7 @@
 #include "doomstat.h"
 #include "i_system.h"
 #include "i_sdlinput.h"
+#include "i_imgui.h"
 #include "gl_main.h"
 #include "con_cvar.h"
 #include "progInfo.h"
@@ -38,9 +39,8 @@ SDL_GLContext   glContext = NULL;
 CVAR(r_trishader, 1);
 CVAR(v_checkratio, 0);
 CVAR(v_fullscreen, 0);
-CVAR_EXTERNAL(m_menumouse);
 CVAR_CMD(v_vsync, 1) {
-    SDL_GL_SetSwapInterval((int)v_vsync.value);
+	SDL_GL_SetSwapInterval((int)v_vsync.value);
 }
 
 float display_scale = 1.0f;
@@ -59,43 +59,43 @@ int win_px_h = 0;
 void GL_OnResize(int w, int h);
 
 static void GetNativeDisplayPixels(int* out_w, int* out_h, SDL_Window* window) {
-    *out_w = 0; *out_h = 0;
+	*out_w = 0; *out_h = 0;
 
-    SDL_DisplayID display = 0;
-    if (window) {
-        display = SDL_GetDisplayForWindow(window);
-        if (!display) {
-            I_Printf("SDL3: SDL_GetDisplayForWindow failed (%s)", SDL_GetError());
-        }
-    }
-    if (!display) {
-        display = SDL_GetPrimaryDisplay();
-        if (!display) {
-            I_Printf("SDL3: SDL_GetPrimaryDisplay failed (%s)", SDL_GetError());
-        }
-    }
+	SDL_DisplayID display = 0;
+	if (window) {
+		display = SDL_GetDisplayForWindow(window);
+		if (!display) {
+			I_Printf("SDL3: SDL_GetDisplayForWindow failed (%s)", SDL_GetError());
+		}
+	}
+	if (!display) {
+		display = SDL_GetPrimaryDisplay();
+		if (!display) {
+			I_Printf("SDL3: SDL_GetPrimaryDisplay failed (%s)", SDL_GetError());
+		}
+	}
 
-    const SDL_DisplayMode* dm = NULL;
-    if (display) {
-        dm = SDL_GetDesktopDisplayMode(display);
-        if (!dm) {
-            I_Printf("SDL3: SDL_GetDesktopDisplayMode failed (%s)", SDL_GetError());
-            dm = SDL_GetCurrentDisplayMode(display);
-            if (!dm) {
-                I_Printf("SDL3: SDL_GetCurrentDisplayMode failed (%s)", SDL_GetError());
-            }
-        }
-    }
+	const SDL_DisplayMode* dm = NULL;
+	if (display) {
+		dm = SDL_GetDesktopDisplayMode(display);
+		if (!dm) {
+			I_Printf("SDL3: SDL_GetDesktopDisplayMode failed (%s)", SDL_GetError());
+			dm = SDL_GetCurrentDisplayMode(display);
+			if (!dm) {
+				I_Printf("SDL3: SDL_GetCurrentDisplayMode failed (%s)", SDL_GetError());
+			}
+		}
+	}
 
-    if (dm) {
-        *out_w = dm->w;
-        *out_h = dm->h;
-        return;
-    }
+	if (dm) {
+		*out_w = dm->w;
+		*out_h = dm->h;
+		return;
+	}
 
-    *out_w = 1920;
-    *out_h = 1080;
-    I_Printf("SDL3: SDL_DisplayMode falling back to %dx%d", *out_w, *out_h);
+	*out_w = 1920;
+	*out_h = 1080;
+	I_Printf("SDL3: SDL_DisplayMode falling back to %dx%d", *out_w, *out_h);
 }
 
 //
@@ -103,145 +103,133 @@ static void GetNativeDisplayPixels(int* out_w, int* out_h, SDL_Window* window) {
 //
 
 void I_InitScreen(void) {
-    unsigned int  flags = 0;
-    char          title[256];
-    const char* video_driver;
-    int initial_w, initial_h;
+	unsigned int  flags = 0;
+	char		  title[256];
+	const char* video_driver;
+	int initial_w, initial_h;
 
-    int native_w = 0, native_h = 0;
-    GetNativeDisplayPixels(&native_w, &native_h, window);
+	int native_w = 0, native_h = 0;
+	GetNativeDisplayPixels(&native_w, &native_h, window);
 
-    if ((int)v_fullscreen.value) {
-        initial_w = native_w;
-        initial_h = native_h;
-    }
-    else {
-        initial_w = (int)(native_w * 0.8f);
-        initial_h = (int)(native_h * 0.8f);
-    }
+	if ((int)v_fullscreen.value) {
+		initial_w = native_w;
+		initial_h = native_h;
+	}
+	else {
+		initial_w = (int)(native_w * 0.8f);
+		initial_h = (int)(native_h * 0.8f);
+	}
 
-    video_width = initial_w;
-    video_height = initial_h;
-    video_ratio = (float)video_width / (float)video_height;
+	video_width = initial_w;
+	video_height = initial_h;
+	video_ratio = (float)video_width / (float)video_height;
 
-    usingGL = false;
+	usingGL = false;
 
-    video_driver = SDL_GetCurrentVideoDriver();
-    
+	video_driver = SDL_GetCurrentVideoDriver();
+	
 #if defined __arm__ || defined __aarch64__ || defined __APPLE__ || defined __LEGACYGL__
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #else
-    
-    if (!video_driver || !dstreq(video_driver, "wayland")) {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    }
+	
+	if (!video_driver || !dstreq(video_driver, "wayland")) {
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	}
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 #endif
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    flags = SDL_WINDOW_OPENGL;
+	flags = SDL_WINDOW_OPENGL;
 
 #ifndef __APPLE__
-    flags |= SDL_WINDOW_HIGH_PIXEL_DENSITY;
+	flags |= SDL_WINDOW_HIGH_PIXEL_DENSITY;
 #endif
-    
-    if ((int)v_fullscreen.value) {
-        flags |= SDL_WINDOW_FULLSCREEN;
-    }
-    else {
-        flags |= SDL_WINDOW_RESIZABLE;
-    }
+	
+	if ((int)v_fullscreen.value) {
+		flags |= SDL_WINDOW_FULLSCREEN;
+	}
 
-    if (glContext) { SDL_GL_DestroyContext(glContext); glContext = NULL; }
-    if (window) { SDL_DestroyWindow(window); window = NULL; }
+	if (glContext) { SDL_GL_DestroyContext(glContext); glContext = NULL; }
+	if (window) { SDL_DestroyWindow(window); window = NULL; }
 
-    sprintf(title, PROGRAM_NAME " compiled on: %s", version_date);
-    window = SDL_CreateWindow(title, initial_w, initial_h, flags);
-    if (!window) {
-        I_Error("I_InitScreen: Failed to create window");
-        return;
-    }
+	sprintf(title, PROGRAM_NAME " compiled on: %s", version_date);
+	window = SDL_CreateWindow(title, initial_w, initial_h, flags);
+	if (!window) {
+		I_Error("I_InitScreen: Failed to create window");
+		return;
+	}
 
-    if (!(flags & SDL_WINDOW_FULLSCREEN)) {
-        SDL_SetWindowBordered(window, true);
-    }
+	if (!(flags & SDL_WINDOW_FULLSCREEN)) {
+		SDL_SetWindowBordered(window, true);
+	}
 
-    if (flags & SDL_WINDOW_FULLSCREEN) {
-        SDL_DisplayID displayid = SDL_GetDisplayForWindow(window);
-        if (!displayid) displayid = SDL_GetPrimaryDisplay();
+	if (flags & SDL_WINDOW_FULLSCREEN) {
+		SDL_DisplayID displayid = SDL_GetDisplayForWindow(window);
+		if (!displayid) displayid = SDL_GetPrimaryDisplay();
 
-        const SDL_DisplayMode* desk = displayid ? SDL_GetDesktopDisplayMode(displayid) : NULL;
-        SDL_DisplayMode disp_mode = { 0 };
-        if (desk) {
-            if (!SDL_GetClosestFullscreenDisplayMode(displayid, desk->w, desk->h, 0.0f, false, &disp_mode)) {
-                disp_mode.displayID = displayid;
-                disp_mode.w = native_w;
-                disp_mode.h = native_h;
-                disp_mode.refresh_rate = 0.0f;
-            }
-        }
-        else {
-            disp_mode.displayID = displayid;
-            disp_mode.w = native_w;
-            disp_mode.h = native_h;
-            disp_mode.refresh_rate = 0.0f;
-        }
+		const SDL_DisplayMode* desk = displayid ? SDL_GetDesktopDisplayMode(displayid) : NULL;
+		SDL_DisplayMode disp_mode = { 0 };
+		if (desk) {
+			if (!SDL_GetClosestFullscreenDisplayMode(displayid, desk->w, desk->h, 0.0f, false, &disp_mode)) {
+				disp_mode.displayID = displayid;
+				disp_mode.w = native_w;
+				disp_mode.h = native_h;
+				disp_mode.refresh_rate = 0.0f;
+			}
+		}
+		else {
+			disp_mode.displayID = displayid;
+			disp_mode.w = native_w;
+			disp_mode.h = native_h;
+			disp_mode.refresh_rate = 0.0f;
+		}
 
-        SDL_SetWindowFullscreenMode(window, &disp_mode);
-        SDL_SetWindowFullscreen(window, true);
-        SDL_SyncWindow(window);
-    }
-
-    I_SetMenuCursorMouseRect();
+		SDL_SetWindowFullscreenMode(window, &disp_mode);
+		SDL_SetWindowFullscreen(window, true);
+		SDL_SyncWindow(window);
+	}
 
 #ifdef SDL_PLATFORM_LINUX
-    SDL_Environment* env = SDL_GetEnvironment();
-    if (env) {
-        SDL_SetEnvironmentVariable(env, "__GL_MaxFramesAllowed", "1", false);
-    }
+	SDL_Environment* env = SDL_GetEnvironment();
+	if (env) {
+		SDL_SetEnvironmentVariable(env, "__GL_MaxFramesAllowed", "1", false);
+	}
 #endif
 
-    glContext = SDL_GL_CreateContext(window);
-    if (!glContext) {
-        I_Error("I_InitScreen: Failed to create OpenGL context");
-        return;
-    }
-    SDL_GL_MakeCurrent(window, glContext);
+	glContext = SDL_GL_CreateContext(window);
+	if (!glContext) {
+		I_Error("I_InitScreen: Failed to create OpenGL context");
+		return;
+	}
+	SDL_GL_MakeCurrent(window, glContext);
 
-    SDL_GetWindowSizeInPixels(window, &win_px_w, &win_px_h);
-    GL_OnResize(win_px_w, win_px_h);
+	SDL_GetWindowSizeInPixels(window, &win_px_w, &win_px_h);
+	GL_OnResize(win_px_w, win_px_h);
 
-    SDL_DisplayID displayid = SDL_GetDisplayForWindow(window);
-    if (displayid) {
-        float f = SDL_GetDisplayContentScale(displayid);
-        if (f != 0) display_scale = f;
-    }
+	SDL_DisplayID displayid = SDL_GetDisplayForWindow(window);
+	if (displayid) {
+		float f = SDL_GetDisplayContentScale(displayid);
+		if (f != 0) display_scale = f;
+	}
 
-    SDL_GL_SetSwapInterval((int)v_vsync.value);
+	SDL_GL_SetSwapInterval((int)v_vsync.value);
 
-    glViewport(0, 0, win_px_w, win_px_h);
-    glScissor(0, 0, win_px_w, win_px_h);
-    glClearColor(0.f, 0.f, 0.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (imgui_init(&glContext, window)) {
+		return;
+	}
+	
+	glViewport(0, 0, win_px_w, win_px_h);
+	glScissor(0, 0, win_px_w, win_px_h);
+	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    SDL_ShowWindow(window);
-    SDL_GL_SwapWindow(window);
-    SDL_HideCursor();
-}
-
-void I_SetMenuCursorMouseRect() {
-    if (!window) return;
-    if (m_menumouse.value) {
-        SDL_Rect rect = { 0, 0, (video_width * SCREENHEIGHT) / SCREENWIDTH - 96, video_height };
-        SDL_SetWindowMouseRect(window, &rect);
-    }
-    else {
-        SDL_SetWindowMouseRect(window, NULL);
-    }
+	SDL_ShowWindow(window);
+	SDL_GL_SwapWindow(window);
+	SDL_HideCursor();
 }
 
 //
@@ -249,17 +237,20 @@ void I_SetMenuCursorMouseRect() {
 //
 
 void I_ShutdownVideo(void) {
-    if (glContext) {
-        SDL_GL_DestroyContext(glContext);
-        glContext = NULL;
-    }
-
-    if (window) {
-        SDL_DestroyWindow(window);
-        window = NULL;
-    }
-
-    SDL_Quit();
+	imgui_uninit();
+	
+	if (glContext != NULL) {
+		SDL_GL_DestroyContext(glContext);
+		glContext = NULL;
+	}
+	
+	if (window != NULL) {
+		SDL_DestroyWindow(window);
+		window = NULL;
+	}
+	
+	SDL_Quit();
+	return;
 }
 
 //
@@ -281,13 +272,13 @@ void I_InitVideo(void) {
 
 #endif
 
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
-        I_Error("ERROR - Failed to initialize SDL");
-        return;
-    }
+	if (!SDL_Init(SDL_INIT_VIDEO)) {
+		I_Error("ERROR - Failed to initialize SDL");
+		return;
+	}
 
-    I_StartTic();
-    I_InitScreen();
+	I_StartTic();
+	I_InitScreen();
 }
 
 //
@@ -295,62 +286,60 @@ void I_InitVideo(void) {
 //
 
 void I_ToggleFullscreen(void) {
-    if (!window) return;
+	if (!window) return;
 
-    int native_w = 0, native_h = 0;
-    GetNativeDisplayPixels(&native_w, &native_h, window);
+	int native_w = 0, native_h = 0;
+	GetNativeDisplayPixels(&native_w, &native_h, window);
 
-    v_fullscreen.value = v_fullscreen.value ? 0 : 1;
+	v_fullscreen.value = v_fullscreen.value ? 0 : 1;
 
-    if ((int)v_fullscreen.value) {
-        SDL_DisplayID displayid = SDL_GetDisplayForWindow(window);
-        if (!displayid) displayid = SDL_GetPrimaryDisplay();
+	if ((int)v_fullscreen.value) {
+		SDL_DisplayID displayid = SDL_GetDisplayForWindow(window);
+		if (!displayid) displayid = SDL_GetPrimaryDisplay();
 
-        const SDL_DisplayMode* desk = displayid ? SDL_GetDesktopDisplayMode(displayid) : NULL;
-        SDL_DisplayMode disp_mode = { 0 };
+		const SDL_DisplayMode* desk = displayid ? SDL_GetDesktopDisplayMode(displayid) : NULL;
+		SDL_DisplayMode disp_mode = { 0 };
 
-        if (desk) {
-            if (!SDL_GetClosestFullscreenDisplayMode(displayid, desk->w, desk->h, 0.0f, false, &disp_mode)) {
-                disp_mode.displayID = displayid;
-                disp_mode.w = native_w;
-                disp_mode.h = native_h;
-                disp_mode.refresh_rate = 0.0f;
-            }
-        }
-        else {
-            disp_mode.displayID = displayid;
-            disp_mode.w = native_w;
-            disp_mode.h = native_h;
-            disp_mode.refresh_rate = 0.0f;
-        }
+		if (desk) {
+			if (!SDL_GetClosestFullscreenDisplayMode(displayid, desk->w, desk->h, 0.0f, false, &disp_mode)) {
+				disp_mode.displayID = displayid;
+				disp_mode.w = native_w;
+				disp_mode.h = native_h;
+				disp_mode.refresh_rate = 0.0f;
+			}
+		}
+		else {
+			disp_mode.displayID = displayid;
+			disp_mode.w = native_w;
+			disp_mode.h = native_h;
+			disp_mode.refresh_rate = 0.0f;
+		}
 
-        SDL_SetWindowFullscreenMode(window, &disp_mode);
-        SDL_SetWindowFullscreen(window, true);
-        SDL_SyncWindow(window);
+		SDL_SetWindowFullscreenMode(window, &disp_mode);
+		SDL_SetWindowFullscreen(window, true);
+		SDL_SyncWindow(window);
 
-        video_width = native_w;
-        video_height = native_h;
-    }
-    else {
-        SDL_SetWindowFullscreen(window, false);
-        SDL_SetWindowBordered(window, true);
+		video_width = native_w;
+		video_height = native_h;
+	}
+	else {
+		SDL_SetWindowFullscreen(window, false);
+		SDL_SetWindowBordered(window, true);
 
-        int windowed_w = (int)(native_w * 0.8f);
-        int windowed_h = (int)(native_h * 0.8f);
+		int windowed_w = (int)(native_w * 0.8f);
+		int windowed_h = (int)(native_h * 0.8f);
 
-        SDL_SetWindowSize(window, windowed_w, windowed_h);
-        SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+		SDL_SetWindowSize(window, windowed_w, windowed_h);
+		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
-        video_width = windowed_w;
-        video_height = windowed_h;
-    }
+		video_width = windowed_w;
+		video_height = windowed_h;
+	}
 
-    video_ratio = (float)video_width / (float)video_height;
+	video_ratio = (float)video_width / (float)video_height;
 
-    SDL_GetWindowSizeInPixels(window, &win_px_w, &win_px_h);
-    GL_OnResize(win_px_w, win_px_h);
-
-    I_SetMenuCursorMouseRect();
+	SDL_GetWindowSizeInPixels(window, &win_px_w, &win_px_h);
+	GL_OnResize(win_px_w, win_px_h);
 }
 
 //
@@ -358,8 +347,8 @@ void I_ToggleFullscreen(void) {
 //
 
 void V_RegisterCvars(void) {
-    CON_CvarRegister(&r_trishader);
-    CON_CvarRegister(&v_checkratio);
-    CON_CvarRegister(&v_vsync);
-    CON_CvarRegister(&v_fullscreen);
+	CON_CvarRegister(&r_trishader);
+	CON_CvarRegister(&v_checkratio);
+	CON_CvarRegister(&v_vsync);
+	CON_CvarRegister(&v_fullscreen);
 }

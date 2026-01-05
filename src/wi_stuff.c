@@ -110,7 +110,7 @@ void WI_Start(void) {
 	// start music
 	S_StartMusic(W_GetNumForName("MUSDONE"));
 
-	allowmenu = true;
+	allowMenu = true;
 }
 
 //
@@ -122,7 +122,7 @@ void WI_Stop(void) {
 	wi_stage = 0;
 	wi_advance = 0;
 
-	allowmenu = false;
+	allowMenu = false;
 
 	S_StopMusic();
 	WIPE_FadeScreen(6);

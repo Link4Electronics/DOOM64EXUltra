@@ -22,4 +22,7 @@
 /* - Net - */
 #define NET_VERSION "DOOM64EXUltra"
 
+/* - Font - */
+#define FONT_SIZE 26.0f
+
 #endif

@@ -172,7 +172,6 @@ void CON_CvarInit(void) {
 	S_RegisterCvars();
 	I_RegisterCvars();
 	ISDL_RegisterKeyCvars();
-	M_RegisterCvars();
 	P_RegisterCvars();
 	G_RegisterCvars();
 	LOC_RegisterCvars();

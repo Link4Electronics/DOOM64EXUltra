@@ -299,7 +299,7 @@ void P_Start(void) {
 	P_ActivateLineByTag(999, players[0].mo);
 
 	// enable menu and set gamestate
-	allowmenu = true;
+	allowMenu = true;
 	gamestate = GS_LEVEL;
 
 	S_StartMusic(map->music);
@@ -417,7 +417,7 @@ int P_Ticker(void) {
 	}
 
 	// pause if in menu and at least one tic has been run
-	if (!netgame && menuactive &&
+	if (!netgame && menuActive &&
 		!demoplayback && players[consoleplayer].viewz != 1) {
 		return 0;
 	}

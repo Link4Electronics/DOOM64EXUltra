@@ -111,7 +111,7 @@ static CMD(Automap) {
 	}
 
 	if (!automapactive) {
-		if (menuactive) return;
+		if (menuActive) return;
 		AM_Start();
 	}
 	else {

@@ -804,8 +804,7 @@ static void W_KPFInit(void)
 	const struct override_item items[] = {
 		{ "TITLE",   { "gfx/Doom64_HiRes.png", NULL }, win_px_w, win_px_h },
 		{ "USLEGAL", { "gfx/legals.png",       NULL }, win_px_w, win_px_h },
-		{ PHSENSW_LUMPNAME, { "gfx/PhotosensitivityWarning.png", NULL }, win_px_w, win_px_h },
-		{ "CURSOR",  { "gfx/cursor.png",       NULL }, 33, 32 },
+		{ PHSENSW_LUMPNAME, { "gfx/PhotosensitivityWarning.png", NULL }, win_px_w, win_px_h }
 	};
 
 	int need = SDL_arraysize(items);

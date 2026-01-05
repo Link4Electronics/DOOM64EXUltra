@@ -52,7 +52,7 @@ unsigned long   I_GetRandomTimeSeed(void);
 // for normal input.
 ticcmd_t* I_BaseTiccmd(void);
 
-// Called by M_Responder when quit is selected.
+// Called by m_event when quit is selected.
 // Clean exit, displays sell blurb.
 void I_Quit(void);
 

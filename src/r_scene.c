@@ -18,6 +18,12 @@
 //
 //-----------------------------------------------------------------------------
 
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#define CIMGUI_USE_SDL3
+#define CIMGUI_USE_OPENGL3
+#include <cimgui/cimgui.h>
+#include <cimgui_impl.h>
+
 #include "doomdef.h"
 #include "doomstat.h"
 #include "gl_main.h"

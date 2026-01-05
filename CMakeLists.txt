@@ -7,13 +7,16 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunknown-pragmas -fwrapv -MD")
-
 set(CMAKE_C_FLAGS_DEBUG "-g -Wall")
 set(CMAKE_C_FLAGS_RELEASE "-s -O2")
 
 add_subdirectory(src/submodules)
 
-file(GLOB SOURCE_FILES "src/*.c")
+file(
+	GLOB SOURCE_FILES
+	"src/*.c"
+	"src/menus/*.c"
+)
 
 find_package(SDL3 REQUIRED)
 find_package(PNG REQUIRED)
@@ -23,6 +26,8 @@ include_directories(
 	${libpng_INCLUDE_DIRS}
 	${OpenGL_INCLUDE_DIRS}
 	src/dummyFMOD
+	src/submodules
+	src
 )
 
 configure_file(

@@ -1,8 +1,7 @@
 // Emacs style mode select   -*- C -*-
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 1993-1997 Id Software, Inc.
-// Copyright(C) 2007-2012 Samuel Villarreal
+// Copyright(C) 2026 StevenSYS
 //
 // This source is available for distribution and/or modification
 // only under the terms of the DOOM Source Code License as
@@ -15,24 +14,17 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef __I_VIDEO_H__
-#define __I_VIDEO_H__
+#include "tools.h"
+#include "m_menu.h"
 
-#include <SDL3/SDL_surface.h>
-#include <SDL3/SDL_video.h>
+MENU_INIT {
+	STUB();
+	return;
+}
 
+MENU_RENDER {
+	STUB();
+	return;
+}
 
-////////////Video///////////////
-
-extern SDL_Surface* screen;
-extern SDL_Window* window;
-void I_InitVideo(void);
-void I_InitScreen(void);
-void I_ShutdownVideo(void);
-void I_ToggleFullscreen(void);
-void V_RegisterCvars();
-
-extern float display_scale;
-extern int win_px_w, win_px_h;
-
-#endif
+MENU_VAR(menu_saveGame, "Save Game", NULL, true);

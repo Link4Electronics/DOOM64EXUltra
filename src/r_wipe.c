@@ -58,7 +58,7 @@ void WIPE_FadeScreen(int fadetics) {
 
 	I_ShaderUnBind();
 
-	allowmenu = false;
+	allowMenu = false;
 
 	wipeFadeAlpha = 0xff;
 	wipeMeltTexture = GL_ScreenToTexture();
@@ -124,7 +124,7 @@ void WIPE_FadeScreen(int fadetics) {
 	GL_SetState(GLSTATE_BLEND, 0);
 	GL_UnloadTexture(&wipeMeltTexture);
 
-	allowmenu = true;
+	allowMenu = true;
 
 	I_ShaderBind();
 }
@@ -142,8 +142,8 @@ void WIPE_MeltScreen(void) {
 
 	I_ShaderUnBind();
 
-	M_ClearMenus();
-	allowmenu = false;
+	// M_ClearMenus();
+	allowMenu = false;
 
 	wipeMeltTexture = GL_ScreenToTexture();
 

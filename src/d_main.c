@@ -52,6 +52,7 @@
 #include "gl_draw.h"
 #include "net_client.h"
 #include "i_shaders.h"
+#include "i_imgui.h"
 
 void D_DoomLoop(void);
 
@@ -138,9 +139,9 @@ void D_ProcessEvents(void) {
 				continue;    // dev keys ate the event
 			}
 		}
-
-		if (M_Responder(ev)) {
-			continue;    // menu ate the event
+		
+		if (m_event(ev)) {
+			continue; // menu ate the event
 		}
 
 		G_Responder(ev);
@@ -166,8 +167,11 @@ int GetLowTic(void);
 boolean PlayersInGame(void);
 
 static void D_DrawInterface(void) {
-	if (menuactive) {
-		M_Drawer();
+	
+	if (menuActive) {
+		imgui_start();
+		
+		m_render();
 	}
 
 	CON_Draw();
@@ -181,6 +185,10 @@ static void D_DrawInterface(void) {
 	// draw pause pic
 	if (paused) {
 		Draw_BigText(-1, 64, WHITE, STRPAUSED);
+	}
+	
+	if (menuActive) {
+		imgui_render();
 	}
 }
 
@@ -214,7 +222,7 @@ int D_MiniLoop(void (*start)(void), void (*stop)(void),
 		int availabletics = 0;
 		int counts = 0;
 
-		windowpause = (menuactive ? true : false);
+		windowpause = (menuActive ? true : false);
 
 		// process one or more tics
 
@@ -437,7 +445,7 @@ static void Title_Drawer(void) {
 //
 
 static int Title_Ticker(void) {
-	if (mainmenuactive) {
+	if (mainMenuActive) {
 		if ((gametic - pagetic) >= (TICRATE * 30)) {
 			return 1;
 		}
@@ -460,10 +468,10 @@ static void Title_Start(void) {
 	pagetic = gametic;
 	usergame = false;   // no save / end game here
 	paused = false;
-	allowclearmenu = false;
+	allowClearMenu = false;
 
 	S_StartMusic(W_GetNumForName("MUSTITLE"));
-	M_StartMainMenu();
+	m_startMainMenu();
 }
 
 //
@@ -471,10 +479,10 @@ static void Title_Start(void) {
 //
 
 static void Title_Stop(void) {
-	mainmenuactive = false;
-	menuactive = false;
-	allowmenu = false;
-	allowclearmenu = true;
+	mainMenuActive = false;
+	menuActive = false;
+	allowMenu = false;
+	allowClearMenu = true;
 
 	WIPE_FadeScreen(8);
 	S_StopMusic();
@@ -598,8 +606,8 @@ static void Credits_Start(void) {
 	creditstage = 0;
 	creditscreenstage = 0;
 	pagetic = gametic;
-	allowmenu = false;
-	menuactive = false;
+	allowMenu = false;
+	menuActive = false;
 	usergame = false;   // no save / end game here
 	paused = false;
 	gamestate = GS_SKIPPABLE;
@@ -612,8 +620,8 @@ static void Credits_Start(void) {
 static int D_ShowSplash(void (*draw)(void), int(*tick)(void), boolean fade) {
 
 	screenalpha = 0xff;
-	allowmenu = false;
-	menuactive = false;
+	allowMenu = false;
+	menuActive = false;
 
 	gamestate = GS_SKIPPABLE;
 	pagetic = gametic;
@@ -925,7 +933,7 @@ void D_DoomMain(void) {
 	P_Init();
 
 	I_Printf("M_Init: Init miscellaneous info.\n");
-	M_Init();
+	m_init();
 
 	I_Printf("NET_Init: Init network subsystem.\n");
 	NET_Init();

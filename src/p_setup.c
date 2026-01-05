@@ -1,4 +1,4 @@
-﻿// Emacs style mode select   -*- C -*-
+// Emacs style mode select   -*- C -*-
 //-----------------------------------------------------------------------------
 //
 // Copyright(C) 1993-1997 Id Software, Inc.

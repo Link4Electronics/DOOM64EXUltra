@@ -148,8 +148,6 @@ void NetUpdate(void) {
 		//if (maketic - gameticdiv >= BACKUPTICS/2-1)
 		//    break;          // can't hold any more
 
-		M_Ticker();
-
 		if (drone) {  // In drone mode, do not generate any ticcmds.
 			continue;
 		}

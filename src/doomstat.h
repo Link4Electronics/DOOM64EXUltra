@@ -84,10 +84,10 @@ extern boolean     window_focused;
 extern  boolean    statusbaractive;
 
 extern  boolean    automapactive;      // In AutoMap mode?
-extern  boolean    menuactive;         // Menu overlayed?
-extern  boolean    allowmenu;          // Allow menu interaction?
-extern  boolean    mainmenuactive;
-extern  boolean    allowclearmenu;
+extern  boolean    menuActive;         // Menu overlayed?
+extern  boolean    allowMenu;          // Allow menu interaction?
+extern  boolean    mainMenuActive;
+extern  boolean    allowClearMenu;
 extern  boolean    paused;             // Game Pause?
 
 extern  boolean    setWindow;

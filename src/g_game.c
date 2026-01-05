@@ -56,11 +56,12 @@
 
 #define DCLICK_TIME     20
 
-extern void M_QuickSave(void);
-extern void M_QuickLoad(void);
-extern void M_SaveGame(int choice);
-extern void M_LoadGame(int choice);
-extern void M_ChangeGammaLevel(int);
+MENU_EXTERNAL(menu_saveGame);
+MENU_EXTERNAL(menu_loadGame);
+
+extern void m_quickSave(void);
+extern void m_quickLoad(void);
+extern void m_changeGammaLevel(int);
 
 void        G_PlayerReborn(int player);
 void        G_InitNew(skill_t skill, int map);
@@ -224,7 +225,7 @@ static CMD(Button) {
 //
 
 static CMD(QuickSave) {
-	M_QuickSave();
+	m_quickSave();
 }
 
 //
@@ -232,7 +233,7 @@ static CMD(QuickSave) {
 //
 
 static CMD(QuickLoad) {
-	M_QuickLoad();
+	m_quickLoad();
 }
 
 //
@@ -240,8 +241,8 @@ static CMD(QuickLoad) {
 //
 
 static CMD(Save) {
-	M_StartControlPanel(true);
-	M_SaveGame(0); // unused param
+	m_startControlPanel(true);
+	m_setupMenu(&menu_saveGame);
 }
 
 //
@@ -249,8 +250,8 @@ static CMD(Save) {
 //
 
 static CMD(Load) {
-	M_StartControlPanel(true);
-	M_LoadGame(0); // unused param
+	m_startControlPanel(true);
+	m_setupMenu(&menu_loadGame);
 }
 
 //
@@ -266,7 +267,7 @@ static CMD(ScreenShot) {
 //
 
 static CMD(Gamma) {
-	M_ChangeGammaLevel(2);
+	m_changeGammaLevel(2);
 }
 
 //
@@ -484,8 +485,8 @@ static CMD(Map) {
 
 			if (gamestate == GS_LEVEL) {
 
-				if (menuactive) {
-					M_ClearMenus();
+				if (menuActive) {
+					m_clearMenus();
 				}
 
 				M_CheatWarp(NULL, param[0]);
@@ -1139,7 +1140,7 @@ void G_Ticker(void) {
 		gameaction = ga_nothing;
 	}
 
-	if (paused || (menuactive && !netgame)) {
+	if (paused || (menuActive && !netgame)) {
 		basetic++;    // For tracers and RNG -- we must maintain sync
 	}
 	else {

@@ -3,6 +3,7 @@
 //
 // Copyright(C) 1993-1997 Id Software, Inc.
 // Copyright(C) 2007-2012 Samuel Villarreal
+// Copyright(C) 2026 StevenSYS
 //
 // This source is available for distribution and/or modification
 // only under the terms of the DOOM Source Code License as
@@ -19,37 +20,49 @@
 #define __M_MENU__
 
 #include "d_event.h"
+#include "con_cvar.h"
 
-//
-// MENUS
-//
-// Called by main loop,
-// saves config file and calls I_Quit when user exits.
-// Even when the menu is not displayed,
-// this can resize the view and change game parameters.
-// Does all the real work of the menu interaction.
-boolean M_Responder(event_t* ev);
+/* Macros */
+#define MENU_VAR(_vName, _name, _prev, _autoPrev) \
+	menu_t _vName = { \
+		_name, \
+		&init, \
+		&render, \
+		_prev, \
+		_autoPrev \
+	}
 
-// Called by main loop,
-// only used for menu (skull cursor) animation.
-void M_Ticker(void);
+#define MENU_INIT static void init()
 
-// Called by main loop,
-// draws the menus directly into the screen buffer.
-void M_Drawer(void);
+#define MENU_RENDER static void render()
 
-// Called by D_DoomMain,
-// loads the config file.
-void M_Init(void);
+#define MENU_EXTERNAL(_vName) \
+	extern menu_t _vName
 
-// Called by intro code to force menu up upon a keypress,
-// does nothing if menu is already up.
-void M_StartControlPanel(boolean forcenext);
+/* Typedef Functions */
+typedef void (menuRender)();
+typedef void (menuInit)();
 
-void M_StartMainMenu(void);
+/* Structs */
+typedef struct menu_s {
+	const char *title;
+	menuInit *init;
+	menuRender *render;
+	struct menu_s *previous;
+	boolean autoPrev;
+} menu_t;
 
-void M_RegisterCvars(void);
-
-void M_ClearMenus(void);
+/* Functions */
+void m_setCvar(
+	cvar_t *cvar,
+	float value
+);
+boolean m_event(event_t *event);
+void m_setupMenu(menu_t *next);
+void m_render();
+void m_init();
+void m_startControlPanel(boolean forceNext);
+void m_startMainMenu();
+void m_clearMenus();
 
 #endif

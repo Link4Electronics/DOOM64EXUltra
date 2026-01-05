@@ -88,24 +88,24 @@ CVAR_CMD(r_colorscale, 0) {
     GL_SetColorScale();
 }
 
-CVAR_CMD(r_filter, 0) {
+CVAR_CMD(r_filter, 2) {
 	GL_DumpTextures();
 	GL_SetTextureFilter();
 }
 
-CVAR_CMD(r_weaponFilter, 0) {
+CVAR_CMD(r_weaponFilter, 2) {
 	GL_DumpTextures();
 }
 
-CVAR_CMD(r_hudFilter, 0) {
+CVAR_CMD(r_hudFilter, 2) {
 	GL_DumpTextures();
 }
 
-CVAR_CMD(r_skyFilter, 0) {
+CVAR_CMD(r_skyFilter, 2) {
 	GL_DumpTextures();
 }
 
-CVAR_CMD(r_objectFilter, 0) {
+CVAR_CMD(r_objectFilter, 2) {
 	GL_DumpTextures();
 }
 
