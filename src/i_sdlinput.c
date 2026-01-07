@@ -32,6 +32,7 @@
 #include "con_cvar.h"
 #include "dgl.h"
 #include "g_settings.h"
+#include "con_console.h"
 
 CVAR(v_msensitivityx, 5);
 CVAR(v_msensitivityy, 5);
@@ -621,11 +622,6 @@ void I_GetEvent(SDL_Event* Event) {
 			break;
 		}
 
-		if ((Event->key.key == SDLK_RETURN && (Event->key.mod & SDL_KMOD_ALT))) {
-			I_ToggleFullscreen();
-			break;
-		}
-
 		event.type = ev_keydown;
 		event.data1 = I_TranslateKey(&Event->key);
 		if(event.data1) {
@@ -710,7 +706,10 @@ void I_GetEvent(SDL_Event* Event) {
 		mwheeldowntic = 0;
 	}
 	
-	if (menuActive) {
+	if (
+		menuActive &&
+		!console_enabled
+	) {
 		imgui_event(Event);
 	}
 	return;

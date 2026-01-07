@@ -20,13 +20,13 @@
 #include "tools.h"
 #include "m_menu.h"
 
-MENU_EXTERNAL(menu_options);
-MENU_EXTERNAL(menu_quitMenu);
-MENU_EXTERNAL(menu_restartLevel);
-MENU_EXTERNAL(menu_features);
-MENU_EXTERNAL(menu_loadGame);
-MENU_EXTERNAL(menu_saveGame);
-MENU_EXTERNAL(menu_quitGame);
+MENU_EXTERNAL(options);
+MENU_EXTERNAL(quitMenu);
+MENU_EXTERNAL(restartLevel);
+MENU_EXTERNAL(features);
+MENU_EXTERNAL(loadGame);
+MENU_EXTERNAL(saveGame);
+MENU_EXTERNAL(quitGame);
 
 MENU_INIT {
 	return;
@@ -46,7 +46,7 @@ MENU_RENDER {
 	}
 	
 	if (igButton("Features", (ImVec2){ 0.0f, 0.0f })) {
-		STUB();
+		M_SetupMenu(&menu_features, false);
 	}
 	
 	if (igButton("Load Game", (ImVec2){ 0.0f, 0.0f })) {
@@ -63,4 +63,4 @@ MENU_RENDER {
 	return;
 }
 
-MENU_VAR(menu_pause, "Pause", NULL, true);
+MENU_VAR(pause, "Pause", NULL, true);

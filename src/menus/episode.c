@@ -24,8 +24,8 @@
 
 #define LENGTH_NAMES 64
 
-MENU_EXTERNAL(menu_mainMenu);
-MENU_EXTERNAL(menu_skill);
+MENU_EXTERNAL(mainMenu);
+MENU_EXTERNAL(skill);
 
 extern int map;
 
@@ -83,4 +83,4 @@ MENU_RENDER {
 	return;
 }
 
-MENU_VAR(menu_episode, "Episode Select", &menu_mainMenu, false);
+MENU_VAR(episode, "Episode Select", &menu_mainMenu, false);

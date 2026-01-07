@@ -37,8 +37,8 @@
 #include "i_sdlinput.h"
 
 /* Menu Externals */
-MENU_EXTERNAL(menu_mainMenu);
-MENU_EXTERNAL(menu_pause);
+MENU_EXTERNAL(mainMenu);
+MENU_EXTERNAL(pause);
 
 /* Variables */
 boolean allowMenu = true;
@@ -49,8 +49,6 @@ boolean allowClearMenu = true;
 int map = 1;
 
 /* Static Variables */
-static boolean shiftDown = false;
-
 static menu_t *currentMenu = NULL;
 static menu_t *previousMenu = NULL;
 
@@ -63,25 +61,8 @@ boolean M_Responder(event_t *event) {
 		return false;
 	}
 	
-	if (event->type == ev_mousedown) {
-		if (event->data1 & 1) {
-			ch = KEY_ENTER;
-		}
-		
-		if (event->data1 & 4) {
-			ch = KEY_BACKSPACE;
-		}
-	} else if (event->type == ev_keydown) {
+	if (event->type == ev_keydown) {
 		ch = event->data1;
-		
-		if (ch == KEY_SHIFT) {
-			shiftDown = true;
-		}
-	} else if (event->type == ev_keyup) {
-		if (event->data1 == KEY_SHIFT) {
-			ch = event->data1;
-			shiftDown = false;
-		}
 	}
 	
 	if (ch == KEY_ESCAPE) {
@@ -96,6 +77,13 @@ boolean M_Responder(event_t *event) {
 		}
 		return false;
 	}
+	if (
+		ch == KEY_BACKSPACE &&
+		menuActive
+	) {
+		M_SetupPrevMenu();
+		return true;
+	}
 	return false;
 }
 
@@ -104,6 +92,10 @@ void M_SetupMenu(
 	boolean noPrev
 ) {
 	if (newMenu != NULL) {
+		if (noPrev) {
+			previousMenu = NULL;
+		}
+		
 		if (
 			currentMenu != NULL &&
 			!noPrev
@@ -128,9 +120,9 @@ void M_SetupPrevMenu() {
 		if (previousMenu == NULL) {
 			M_ClearMenus();
 		} else if (currentMenu->previous == NULL) {
-			M_SetupMenu(previousMenu, false);
+			M_SetupMenu(previousMenu, true);
 		} else {
-			M_SetupMenu(currentMenu->previous, false);
+			M_SetupMenu(currentMenu->previous, true);
 		}
 	}
 	return;
@@ -256,7 +248,7 @@ void M_RestartLevel() {
 void M_Init() {
 	M_ClearMenus();
 	M_SetupMenu(&menu_mainMenu, false);
-	menuActive = true;
+	menuActive = false;
 	
 	M_InitShiftXForm();
 	return;

@@ -21,6 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include <stdarg.h> // for va_* stuff
+#include <SDL3/SDL.h>
 
 #include "con_console.h"
 #include "con_cvar.h"
@@ -259,7 +260,13 @@ void CON_ParseKey(unsigned char c) {
 		return;
 	}
 
-	if (shiftdown) {
+	if (
+		(
+			shiftdown || (SDL_GetModState() & SDL_KMOD_CAPS)
+		) && !(
+			shiftdown && (SDL_GetModState() & SDL_KMOD_CAPS)
+		)
+	) {
 		c = shiftxform[c];
 	}
 

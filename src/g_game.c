@@ -56,8 +56,8 @@
 
 #define DCLICK_TIME     20
 
-MENU_EXTERNAL(menu_saveGame);
-MENU_EXTERNAL(menu_loadGame);
+MENU_EXTERNAL(saveGame);
+MENU_EXTERNAL(loadGame);
 
 extern void M_QuickSave(void);
 extern void M_QuickLoad(void);
@@ -644,6 +644,15 @@ static CMD(EndDemo) {
 
 static CMD(ListMaps) {
 	P_ListMaps();
+}
+
+//
+// G_CmdToggle
+//
+
+static CMD(Toggle) {
+	cvar_t *cvar = CON_CvarGet(param[0]);
+	cvar->value = !cvar->value;
 }
 
 //

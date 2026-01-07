@@ -36,7 +36,7 @@ static const char *skills[LENGTH_SKILLS] = {
 
 static unsigned int i;
 
-MENU_EXTERNAL(menu_episode);
+MENU_EXTERNAL(episode);
 
 static void M_ChooseSkill(int choice) {
 	G_DeferedInitNew(choice, map);
@@ -58,4 +58,4 @@ MENU_RENDER {
 	return;
 }
 
-MENU_VAR(menu_skill, "Skill Select", &menu_episode, false);
+MENU_VAR(skill, "Skill Select", &menu_episode, false);

@@ -19,13 +19,12 @@
 
 #include "tools.h"
 #include "m_menu.h"
+#include "doomstat.h"
 
-extern boolean allowMenu;
-
-MENU_EXTERNAL(menu_episode);
-MENU_EXTERNAL(menu_loadGame);
-MENU_EXTERNAL(menu_options);
-MENU_EXTERNAL(menu_quitGame);
+MENU_EXTERNAL(episode);
+MENU_EXTERNAL(loadGame);
+MENU_EXTERNAL(options);
+MENU_EXTERNAL(quitGame);
 
 MENU_INIT {
 	allowMenu = true;
@@ -51,4 +50,4 @@ MENU_RENDER {
 	return;
 }
 
-MENU_VAR(menu_mainMenu, "Main Menu", NULL, false);
+MENU_VAR(mainMenu, "Main Menu", NULL, false);

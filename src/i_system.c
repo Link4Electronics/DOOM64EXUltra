@@ -46,7 +46,7 @@
 
 extern void I_ShutdownSound(void);
 
-CVAR(i_interpolateframes, 1);
+CVAR(i_interpolateframes, 0);
 CVAR(v_accessibility, 0);
 CVAR(v_fadein, 1);
 

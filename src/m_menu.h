@@ -24,7 +24,7 @@
 
 /* Macros */
 #define MENU_VAR(_vName, _name, _prev, _autoPrev) \
-	menu_t _vName = { \
+	menu_t menu_ ## _vName = { \
 		_name, \
 		_prev, \
 		_autoPrev, \
@@ -37,7 +37,7 @@
 #define MENU_RENDER static void render()
 
 #define MENU_EXTERNAL(_vName) \
-	extern menu_t _vName
+	extern menu_t menu_ ## _vName
 
 /* Typedef Functions */
 typedef void (menuRender)();
