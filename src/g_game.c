@@ -651,13 +651,21 @@ static CMD(ListMaps) {
 //
 
 static CMD(Toggle) {
+	cvar_t *cvar;
+	
 	if (!param[0]) {
 		I_Printf(" toggle <cvar>\n");
 		return;
 	}
 	
-	cvar_t *cvar = CON_CvarGet(param[0]);
-	cvar->value = !cvar->value;
+	cvar = CON_CvarGet(param[0]);
+	
+	if (cvar == NULL) {
+		CON_Warnf("\"%s\" doesn't exist\n", param[0]);
+		return;
+	}
+	
+	M_SetCvar(cvar, (float)(!(int)cvar->value)); /* StevenSYS: These casts look really stupid */
 	return;
 }
 

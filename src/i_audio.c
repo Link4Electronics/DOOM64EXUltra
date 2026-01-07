@@ -115,7 +115,6 @@ static int registerSounds() {
 		if (audio == NULL) {
 			failCount++;
 		} else {
-			I_Printf("------%d\n", sfxCount);
 			sound.sounds[sfxCount] = audio;
 			sfxLumpIndex[i] = sfxCount;
 			successCount++;
